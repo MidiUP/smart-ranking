@@ -58,6 +58,12 @@ export class CategoriesService {
   async getCategoriesById(_id: string): Promise<Category> {
     return await this.categoryModel.findOne({ _id }).populate('players').exec();
   }
+  async getCategoriesByCategory(category: string): Promise<Category> {
+    return await this.categoryModel
+      .findOne({ category })
+      .populate('players')
+      .exec();
+  }
 
   async deleteCategoryById(_id: string): Promise<void> {
     await this.categoryModel.remove({ _id }).exec();
@@ -93,5 +99,14 @@ export class CategoriesService {
     await this.categoryModel
       .findOneAndUpdate({ category }, { $set: existsCategory })
       .exec();
+  }
+
+  async getCategoryOfPlayer(idPlayer: string): Promise<Category> {
+    const CategoryPlayer = await this.categoryModel
+      .findOne({})
+      .where('players')
+      .in([idPlayer])
+      .exec();
+    return CategoryPlayer;
   }
 }
